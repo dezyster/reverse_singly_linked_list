@@ -1,29 +1,25 @@
 #include <iostream>
-#include <stack>
 
-using std::stack;
 using std::cout;
 using std::endl;
 
 class OneSideList
 {
-    OneSideList *m_next;
     int m_key;
+    OneSideList *m_next;
 
-    void reverseImpl(std::stack <OneSideList*> &pointerStack)
+    void reverseImpl(OneSideList *prev)
     {
-        if(m_next)
+        OneSideList *temp = m_next;
+        m_next = prev;
+        if(temp)
         {
-            pointerStack.push(this);
-            m_next->reverseImpl(pointerStack);
+            temp->reverseImpl(this);
         }
-        m_next = pointerStack.top();
-        pointerStack.pop();
     }
 
 public:
     OneSideList(int key): m_key{key}, m_next{nullptr}{};
-    OneSideList(int key, OneSideList *next): m_key{key}, m_next{next}{};
 
     void SetNext(OneSideList *next)
     {
@@ -41,11 +37,7 @@ public:
 
     void reverse()
     {
-        std::stack<OneSideList*> pointerStack;
-
-        pointerStack.push(nullptr);
-
-        reverseImpl(pointerStack);
+        reverseImpl(nullptr);
     }
 
 };
@@ -53,12 +45,13 @@ public:
 int main()
 {
     OneSideList first{5};
-
     OneSideList second{7};
-    first.SetNext(&second);
-
     OneSideList third{3};
+    OneSideList fourth{9};
+
+    first.SetNext(&second);
     second.SetNext(&third);
+    third.SetNext(&fourth);
 
     first.print();
 
@@ -66,7 +59,9 @@ int main()
 
     cout << endl;
 
-    third.print();
+    fourth.print();
 
     return 0;
 }
+
+
